@@ -1,32 +1,39 @@
+#Import des librairies
+
 import matplotlib.pyplot as plt
 import sounddevice as sd
 from scipy.fftpack import fft
 import numpy as np
-plt.close('all')
-ax = plt.axes()
 
-fs = 44100
-d = 5
+fs = 100000 #Échantillonnage
+d = 5 #Temps de réception
 
 print("Start recording")
 
-a = sd.rec(int(d * fs), fs, 1, blocking=True)
-# Useless
-a = a.flatten()
-#
-print(a)
+a = sd.rec(int(d * fs), samplerate=fs, channels=1) #Réception du signal (fréquence de 1000)
+sd.wait()
 
 print("End recording")
 
-plt.plot(a)
-plt.title("Recorded sound")
+plt.figure(figsize=(12,6)) #Taille de la figure
 
-X_f = fft(a)
+ax = plt.axes()
+plt.xlim(80000,80300)
 
-ax.set_xlabel('Temps (s)')
-ax.set_ylabel('Amplitude')
+ax.plot(a)
 
-n = np.size(a)
-fr = (fs / 2) * np.linspace(0, 1, round(n/2))
-X_m = (2 / n) * abs(X_f[0:np.size(fr)])
-plt.show()
+ax.set_xlabel("Temps (s)")
+ax.set_ylabel("Amplitude")
+
+amplitude = (np.max(a) - np.min(a))/2
+print(amplitude)
+
+motifs = 0
+for i in range(len(a[:-1])):
+    if a[i] < 0 and a[i + 1] > 0:
+        motifs +=1
+        
+periode = d/motifs
+frequence = 1/periode
+print("frequence :", frequence, "amplitude :", amplitude)
+
