@@ -1,16 +1,34 @@
-import numpy as np
+import matplotlib.pyplot as plt
 import sounddevice as sd
+from scipy.fttpack import ftt
+import numpy as np
+plt.close('all')
 
-fs = 44100
-duration = 10.5  # seconds
-myrecording = sd.rec(int(duration * fs), samplerate=fs, channels=2)
+fs = 16000
+d = 3
 
-sd.default.samplerate = fs
-sd.default.channels = 2
+print("Start recording")
 
-myrecording = sd.rec(int(duration * fs))
+a = sd.rec(int(d * fs), fs, 1, blocking=True)
 
-sd.wait()
+print("End recording")
 
-myrecording = sd.rec(duration * fs, blocking=True)
-myrecording = sd.rec(duration * fs, dtype='float64')
+sd.play(a, fs)
+plt.plot(a); plt.title("Recorded sound")
+
+# spectre
+x_t = fft(a)
+
+# axes de fréquence
+x_f = np.size(a)
+fr = (Fs / 2) * np.linspace(0, 1, round(n/2))
+X_m = (2 / n) * abs(X_f([0,np.size(fr)]))
+
+# figure du spectre
+plt.figure()
+plt.plot(fr, X_m)
+plt.xlabel("Fréquence (Hz)")
+plt.ylabel("Magnitude")
+plt.title(Spectre)
+
+
