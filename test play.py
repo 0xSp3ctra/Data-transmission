@@ -1,7 +1,15 @@
 import numpy as np
 import sounddevice as sd
+from math import pi
 
-fs = 44100
-data = np.random.uniform(-1, 1, fs)
-sd.play(data, fs, blocking=True)
+fs = 41000
+
+data = np.arange(0, 5, 1/fs)
+
+f = 650
+
+
+x = np.sin(2*pi*f*data)
+
+sd.play(x, fs, blocking=True)
 
